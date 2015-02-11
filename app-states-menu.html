@@ -1,0 +1,101 @@
+<link rel="import" href="../app-states/app-state.html">
+
+<polymer-element name="app-states-menu" attributes="root ignoreAttr">
+  <template>
+    <states-helper id="helper"></states-helper>
+    <core-menu>
+      <template repeat="{{menu in menuItems}}">
+        <core-submenu state="{{menu.state}}" icon="settings" label="{{menu.title}}">
+          <template if="{{menu.path && menu.path != ''}}">
+            <core-item state="{{menu.state}}" label="{{menu.title}}">
+              <a href="{{'#' + menu.path}}"></a>
+            </core-item>
+          </template>
+          <template repeat="{{subItem in menu.subItems}}">
+            <core-item state="{{subItem.state}}" label="{{subItem.title}}">
+              <a href="{{'#' + subItem.path}}"></a>
+            </core-item>
+          </template>
+        </core-submenu>
+        <div class="separator"></div>
+      </template>
+    </core-menu>
+    <template if="{{!root}}">
+      Loading ...
+    </template>
+  </template>
+  <script>
+    Polymer({
+
+      showRoot: false,
+
+      trackStateChange: function(e) {
+        var newState = e.detail.currentState;
+        var items = this.shadowRoot.querySelectorAll('core-menu /deep/ [state]');
+
+        [].map.call(items, function(item) {
+          var state = newState;
+          while(state) {
+            if (item.state === state) {
+
+              if (item.tagName == 'SUB-MENU')
+                item.activate();
+            }
+            state = state.parentState;
+          }
+        }.bind(this));
+      },
+
+      attached: function() {
+        document.addEventListener('app-state-changed', this.trackStateChange.bind(this));
+      },
+
+      detached: function() {
+        document.removeEventListener('app-state-changed', this.trackStateChange.bind(this));
+      },
+
+      ready: function() {
+        this.menuItems = [];
+
+      },
+
+      rootChanged: function() {
+        if (this.root) {
+          this.loadMenu();
+        }
+      },
+
+
+      loadMenu: function() {
+
+        var items = this.menuItems = [],
+          helper = this.$.helper,
+          self = this;
+
+        var buildMenu = function(nodes, menuItem) {
+          for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            if (self.ignoreAttr && (node.hasAttribute(self.ignoreAttr) || (node.parentNode && node.parentNode.hasAttribute(self.ignoreAttr))))
+              continue;
+            var newItem = {
+              title: node.header,
+              path: node.url,
+              state: node,
+              selected: self.menuItemSelected
+            };
+
+            if (!menuItem) {
+              items.push(newItem);
+            } else {
+              menuItem.subItems = menuItem.subItems || [];
+              menuItem.subItems.push(newItem);
+            }
+
+            buildMenu(helper.directChildren(node, 'app-state'), newItem);
+          }
+        };
+        buildMenu(this.$.helper.directChildren(this.root, 'app-state'));
+      }
+    });
+  </script>
+</polymer-element>
