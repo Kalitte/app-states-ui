@@ -2,7 +2,7 @@
   "name": "App States UI",
   "version": "0.5.4",
   "description": "App States User Interface components for Polymer",
-  "main": "app-state-ui.html",
+  "main": "app-states-ui.html",
   "keywords": [
     "router",
     "polymer",
@@ -13,13 +13,12 @@
     "Tansu TURKOGLU <tansu.turkoglu@kalitte.com.tr>"
   ],
   "dependencies": {
-    "app-states": "~0.5.4"
+    "app-states": "~0.5.4",
     "polymer": "Polymer/polymer#~0.5.4",
     "core-elements": "Polymer/core-elements#~0.5.4",
     "webcomponentsjs": "~0.5.4"
   },
   "license": "MIT",
-  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
