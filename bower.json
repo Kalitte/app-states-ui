@@ -25,6 +25,9 @@
     "bower_components",
     "lib",
     "test",
-    "tests"
+    "tests",
+    "tmp",
+    "gulpfile.js",
+    "package.json"
   ]
 }
