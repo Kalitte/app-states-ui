@@ -54,7 +54,7 @@
 
       ready: function() {
         this.menuItems = [];
-
+        this.root = window.AppStates.manager.root;
       },
 
       rootChanged: function() {
@@ -67,7 +67,7 @@
       loadMenu: function() {
 
         var items = this.menuItems = [],
-          helper = this.$.helper,
+          helper = window.AppStates.util,
           self = this;
 
         var buildMenu = function(nodes, menuItem) {
@@ -92,7 +92,7 @@
             buildMenu(helper.directChildren(node, 'app-state'), newItem);
           }
         };
-        buildMenu(this.$.helper.directChildren(this.root, 'app-state'));
+        buildMenu(window.AppStates.util.directChildren(this.root, 'app-state'));
       }
     });
   </script>

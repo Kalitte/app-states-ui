@@ -59,14 +59,14 @@
     setHref: function() {
       var stateObj;
       if (this.stateId) {
-        stateObj = window.appStateManager.getStateById(this.stateId);
+        stateObj = window.AppStates.manager.getStateById(this.stateId);
       }
       else if (this.stateUrl)
-        stateObj = window.appStateManager.matchState(this.stateUrl);
+        stateObj = window.AppStates.manager.matchState(this.stateUrl);
       else return;
       if (stateObj) {
         var url = stateObj.buildUrl(this.params);
-        this.setAttribute('href', window.appStateManager.mode != 'pushstate' ? ('#' + url): url);
+        this.setAttribute('href', window.AppStates.manager.mode != 'pushstate' ? ('#' + url): url);
       } else this.setAttribute('href', '');
     }
 
