@@ -1,6 +1,5 @@
 {
   "name": "App States UI",
-  "version": "0.5.4",
   "description": "App States User Interface components for Polymer",
   "main": "app-states-ui.html",
   "keywords": [
@@ -13,7 +12,7 @@
     "Tansu TURKOGLU <tansu.turkoglu@kalitte.com.tr>"
   ],
   "dependencies": {
-    "app-states": "~0.5.4",
+    "app-states": "~0.6.1",
     "polymer": "Polymer/polymer#~0.5.4",
     "core-elements": "Polymer/core-elements#~0.5.4",
     "webcomponentsjs": "~0.5.4"

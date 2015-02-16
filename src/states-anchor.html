@@ -1,0 +1,78 @@
+<polymer-element name="states-anchor" attributes="stateId stateUrl params" extends="a">
+  <template>
+    <content></content>
+  </template>
+  <script>
+
+  (function() {
+
+  //   function pushStateAnchorEventListener(event) {
+  //   // open in new tab
+  //   if (event.ctrlKey || event.metaKey || event.which === 2) {
+  //     return;
+  //   }
+  //
+  //   // push state into the history stack
+  //   window.history.pushState(JSON.parse(this.getAttribute('state')), this.getAttribute('title'), this.getAttribute('href'));
+  //
+  //   // dispatch a popstate event
+  //   try {
+  //     var popstateEvent = new PopStateEvent('popstate', {
+  //       bubbles: false,
+  //       cancelable: false,
+  //       state: window.history.state
+  //     });
+  //
+  //     if ('dispatchEvent_' in window) {
+  //       // FireFox with polyfill
+  //       window.dispatchEvent_(popstateEvent);
+  //     } else {
+  //       // normal
+  //       window.dispatchEvent(popstateEvent);
+  //     }
+  //   } catch(error) {
+  //     // Internet Explorer
+  //     var evt = document.createEvent('CustomEvent');
+  //     evt.initCustomEvent('popstate', false, false, { state: window.history.state });
+  //     window.dispatchEvent(evt);
+  //   }
+  //
+  //   // prevent the default link click
+  //   event.preventDefault();
+  // }
+
+  Polymer({
+
+    ready: function() {
+      // if(window.appStateManager.mode == 'pushstate')
+      //   this.addEventListener('click', pushStateAnchorEventListener, false);
+    },
+
+
+
+    observe: {
+      'stateId': 'setHref',
+      'stateUrl': 'setHref',
+      'params': 'setHref'
+    },
+
+    setHref: function() {
+      var stateObj;
+      if (this.stateId) {
+        stateObj = window.AppStates.getStateById(this.stateId);
+      }
+      else if (this.stateUrl)
+        stateObj = window.AppStates.matchState(this.stateUrl);
+      else return;
+      if (stateObj) {
+        var url = stateObj.buildUrl(this.params);
+        this.setAttribute('href', window.AppStates.getCurrentMode() != 'pushstate' ? ('#' + url): url);
+      } else this.setAttribute('href', '');
+    }
+
+  });
+
+})();
+
+  </script>
+</polymer-element>
