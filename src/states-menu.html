@@ -28,20 +28,32 @@
       showRoot: false,
 
       trackStateChange: function(e) {
-        var newState = e.detail.currentState;
-        var items = this.shadowRoot.querySelectorAll('core-menu /deep/ [state]');
 
-        [].map.call(items, function(item) {
-          var state = newState;
-          while(state) {
-            if (item.state === state) {
+        this.async(function(e) {
+          var newState = e.detail.currentState;
+          var items = this.shadowRoot.querySelectorAll('core-menu /deep/ [state]');
 
-              if (item.tagName == 'SUB-MENU')
-                item.activate();
+          [].map.call(items, function(item) {
+            var state = newState;
+            while (state) {
+              if (item.getAttribute('state') === state.id) {
+
+                if (item.tagName == 'CORE-SUBMENU') {
+                  if (!item.active) {
+                    item.active = true;
+                    item.activate();
+                  }
+                } else if (item.tagName == 'CORE-ITEM') {
+                  var menu = item.parentElement;
+                  menu.selected = menu.items.indexOf(item);
+                }
+              }
+              state = state.parentState;
             }
-            state = state.parentState;
-          }
-        }.bind(this));
+          }.bind(this));
+        }, e);
+
+
       },
 
       attached: function() {
@@ -78,7 +90,7 @@
             var newItem = {
               title: node.header,
               path: node.url,
-              state: node,
+              state: node.id,
               selected: self.menuItemSelected
             };
 
