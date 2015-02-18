@@ -1,3 +1,6 @@
+<link rel="import" href="states-anchor.html">
+
+
 <polymer-element name="states-menu" attributes="root ignoreAttr">
   <template>
     <states-helper id="helper"></states-helper>
@@ -6,12 +9,12 @@
         <core-submenu state="{{menu.state}}" icon="settings" label="{{menu.title}}">
           <template if="{{menu.path && menu.path != ''}}">
             <core-item state="{{menu.state}}" label="{{menu.title}}">
-              <a href="{{'#' + menu.path}}"></a>
+              <a is="states-anchor" stateId="{{menu.state}}"></a>
             </core-item>
           </template>
           <template repeat="{{subItem in menu.subItems}}">
             <core-item state="{{subItem.state}}" label="{{subItem.title}}">
-              <a href="{{'#' + subItem.path}}"></a>
+              <a is="states-anchor" stateId="{{subItem.state}}"></a>
             </core-item>
           </template>
         </core-submenu>

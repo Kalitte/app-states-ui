@@ -3,76 +3,82 @@
     <content></content>
   </template>
   <script>
+    (function() {
 
-  (function() {
+      function pushStateAnchorEventListener(event) {
+        // open in new tab
+        if (event.ctrlKey || event.metaKey || event.which === 2) {
+          return;
+        }
 
-  //   function pushStateAnchorEventListener(event) {
-  //   // open in new tab
-  //   if (event.ctrlKey || event.metaKey || event.which === 2) {
-  //     return;
-  //   }
-  //
-  //   // push state into the history stack
-  //   window.history.pushState(JSON.parse(this.getAttribute('state')), this.getAttribute('title'), this.getAttribute('href'));
-  //
-  //   // dispatch a popstate event
-  //   try {
-  //     var popstateEvent = new PopStateEvent('popstate', {
-  //       bubbles: false,
-  //       cancelable: false,
-  //       state: window.history.state
-  //     });
-  //
-  //     if ('dispatchEvent_' in window) {
-  //       // FireFox with polyfill
-  //       window.dispatchEvent_(popstateEvent);
-  //     } else {
-  //       // normal
-  //       window.dispatchEvent(popstateEvent);
-  //     }
-  //   } catch(error) {
-  //     // Internet Explorer
-  //     var evt = document.createEvent('CustomEvent');
-  //     evt.initCustomEvent('popstate', false, false, { state: window.history.state });
-  //     window.dispatchEvent(evt);
-  //   }
-  //
-  //   // prevent the default link click
-  //   event.preventDefault();
-  // }
+        // push state into the history stack
+        window.history.pushState(this.getAttribute('stateId'), this.getAttribute('title'), this.getAttribute('href'));
 
-  Polymer({
+        // dispatch a popstate event
+        try {
+          var popstateEvent = new PopStateEvent('popstate', {
+            bubbles: false,
+            cancelable: false,
+            state: window.history.state
+          });
 
-    ready: function() {
-      // if(window.appStateManager.mode == 'pushstate')
-      //   this.addEventListener('click', pushStateAnchorEventListener, false);
-    },
+          if ('dispatchEvent_' in window) {
+            // FireFox with polyfill
+            window.dispatchEvent_(popstateEvent);
+          } else {
+            // normal
+            window.dispatchEvent(popstateEvent);
+          }
+        } catch (error) {
+          // Internet Explorer
+          var evt = document.createEvent('CustomEvent');
+          evt.initCustomEvent('popstate', false, false, {
+            state: window.history.state
+          });
+          window.dispatchEvent(evt);
+        }
 
-
-
-    observe: {
-      'stateId': 'setHref',
-      'stateUrl': 'setHref',
-      'params': 'setHref'
-    },
-
-    setHref: function() {
-      var stateObj;
-      if (this.stateId) {
-        stateObj = window.AppStates.getStateById(this.stateId);
+        // prevent the default link click
+        event.preventDefault();
       }
-      else if (this.stateUrl)
-        stateObj = window.AppStates.matchState(this.stateUrl);
-      else return;
-      if (stateObj) {
-        var url = stateObj.buildUrl(this.params);
-        this.setAttribute('href', window.AppStates.getCurrentMode() != 'pushstate' ? ('#' + url): url);
-      } else this.setAttribute('href', '');
-    }
 
-  });
+      Polymer({
 
-})();
+        ready: function() {
+          // if(window.appStateManager.mode == 'pushstate')
+          //   this.addEventListener('click', pushStateAnchorEventListener, false);
+        },
 
+
+
+        observe: {
+          'stateId': 'setHref',
+          'stateUrl': 'setHref',
+          'params': 'setHref'
+        },
+
+        setHref: function() {
+          var stateObj;
+          if (this.stateId) {
+            stateObj = window.AppStates.getStateById(this.stateId);
+          } else if (this.stateUrl)
+            stateObj = window.AppStates.matchState(this.stateUrl);
+          else return;
+          if (stateObj) {
+            var manager = window.AppStates.getInstance();
+            var url = stateObj.buildUrl(this.params);
+            var mode = manager.getCurrentMode();
+            if (mode != 'pushstate')
+              this.setAttribute('href', mode != 'pushstate' ? ('#' + url) : url);
+            else {
+              this.setAttribute('href', manager.virtualPath + url);
+              this.addEventListener('click', pushStateAnchorEventListener, false);
+            }
+          } else this.setAttribute('href', '');
+        }
+
+      });
+
+    })();
   </script>
 </polymer-element>

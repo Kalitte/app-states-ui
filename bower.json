@@ -12,7 +12,7 @@
     "Tansu TURKOGLU <tansu.turkoglu@kalitte.com.tr>"
   ],
   "dependencies": {
-    "app-states": "~0.6.1",
+    "app-states": "~0.6.5",
     "polymer": "Polymer/polymer#~0.5.4",
     "core-elements": "Polymer/core-elements#~0.5.4",
     "webcomponentsjs": "~0.5.4"
